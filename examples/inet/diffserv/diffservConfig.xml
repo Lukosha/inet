@@ -1,0 +1,20 @@
+<config>
+  <classifier type="MFClassifier">
+    <filter destAddress="server" protocol="udp" destPort="1000" dscp="EF"/>
+    <filter destAddress="server" protocol="udp" destPort="5001" dscp="AF11"/>
+    <filter destAddress="server" protocol="udp" destPort="5002" dscp="AF21"/>
+  </classifier>
+  <meters>
+    <meter type="SRTCM" name="m1" cir="30%" cbs="2KiB" ebs="4KiB"/>
+    <meter type="TokenBucket" name="m2" cir="70%" cbs="50KiB"/>
+    <traffic-profile dscp="AF11 AF21 BE" meter="m1"/>
+    <traffic-profile dscp="EF" meter="m2"/>
+  </meters>
+  <actions>
+    <drop dscp="AF11 AF21 BE" color="red"/>
+    <mark dscp="AF11" color="yellow" value="AF13"/>
+    <mark dscp="AF21" color="yellow" value="AF23"/>
+    <mark dscp="EF" color="red" value="AF11"/>
+    <mark dscp="*" value="*"/>
+  </actions>
+</config>
